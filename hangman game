@@ -1,0 +1,58 @@
+import random
+
+def choose_word():
+    words = ['python', 'cybersecurity', 'network', 'firewall', 'hacker', 'encryption']
+    return random.choice(words)
+
+def display_current_progress(word, guessed_letters):
+    display = ""
+    for letter in word:
+        if letter in guessed_letters:
+            display += letter + " "
+        else:
+            display += "_ "
+    return display.strip()
+
+def hangman_game():
+    word = choose_word()
+    guessed_letters = set()
+    attempts_left = 4
+
+    print("🎮 Welcome to the Hangman Game!")
+    print("🔐 Topic: Cybersecurity")
+    print(f"The word has {len(word)} letters. Let's begin!\n")
+
+    while attempts_left > 0:
+        print("Word: ", display_current_progress(word, guessed_letters))
+        print(f"Guessed letters: {' '.join(sorted(guessed_letters))}")
+        print(f"Attempts left: {attempts_left}")
+
+        guess = input("Enter a letter: ").lower()
+
+        if not guess.isalpha() or len(guess) != 1:
+            print("❗ Invalid input! Please enter a single alphabet letter.\n")
+            continue
+
+        if guess in guessed_letters:
+            print("⚠️ You already guessed that letter. Try another.\n")
+            continue
+
+        guessed_letters.add(guess)
+
+        if guess in word:
+            print("✅ Good guess!\n")
+        else:
+            attempts_left -= 1
+            print("❌ Wrong guess!\n")
+
+        # Check win condition
+        if all(letter in guessed_letters for letter in word):
+            print("\n🎉 Congratulations! You guessed the word correctly:", word)
+            break
+    else:
+        print("\n💀 Game Over! You've run out of attempts.")
+        print("The correct word was:", word)
+
+# Run the game
+if __name__ == "__main__":
+    hangman_game()
