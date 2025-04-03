@@ -1,0 +1,67 @@
+import os
+import shutil
+import random
+
+# Folder to organize (Auto-created if missing)
+FOLDER_TO_ORGANIZE = "Test_Folder"
+
+# File categories and extensions
+FILE_CATEGORIES = {
+    "Images": [".jpg", ".jpeg", ".png", ".gif", ".bmp"],
+    "Documents": [".pdf", ".docx", ".txt", ".xlsx", ".pptx"],
+    "Videos": [".mp4", ".avi", ".mkv", ".mov"],
+    "Music": [".mp3", ".wav", ".aac"],
+    "Archives": [".zip", ".rar", ".7z"],
+    "Code": [".py", ".js", ".html", ".css", ".java", ".cpp"],
+    "Others": []  # Default category
+}
+
+# Random file names for testing
+TEST_FILES = [
+    "report.docx", "photo.jpg", "song.mp3", "movie.mp4",
+    "script.py", "archive.zip", "notes.txt", "presentation.pptx"
+]
+
+def create_test_files():
+    """Generate random test files in the folder."""
+    os.makedirs(FOLDER_TO_ORGANIZE, exist_ok=True)
+    for file in TEST_FILES:
+        file_path = os.path.join(FOLDER_TO_ORGANIZE, file)
+        with open(file_path, "w") as f:
+            f.write("Dummy content")
+    print("✅ Test files created!")
+
+def organize_files():
+    """Sort files into subfolders based on type."""
+    if not os.path.exists(FOLDER_TO_ORGANIZE):
+        print("❌ Folder not found! Creating it now...")
+        os.makedirs(FOLDER_TO_ORGANIZE)
+
+    for file in os.listdir(FOLDER_TO_ORGANIZE):
+        file_path = os.path.join(FOLDER_TO_ORGANIZE, file)
+
+        # Skip directories
+        if os.path.isdir(file_path):
+            continue
+
+        file_extension = os.path.splitext(file)[1].lower()
+
+        # Determine the category
+        destination_folder = "Others"
+        for category, extensions in FILE_CATEGORIES.items():
+            if file_extension in extensions:
+                destination_folder = category
+                break
+
+        # Create category folder
+        target_folder = os.path.join(FOLDER_TO_ORGANIZE, destination_folder)
+        os.makedirs(target_folder, exist_ok=True)
+
+        # Move the file
+        shutil.move(file_path, os.path.join(target_folder, file))
+        print(f"✅ Moved: {file} → {destination_folder}/")
+
+if __name__ == "__main__":
+    create_test_files()  # Generate test files
+    organize_files()  # Sort the files
+    print("🎯 File organization complete!")
