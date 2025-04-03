@@ -1,0 +1,44 @@
+import ipywidgets as widgets
+from IPython.display import display
+import random
+
+class Chatbot:
+    def __init__(self):
+        self.responses = {
+            "hello": ["Hi there!", "Hello! How can I help you today?", "Hey! What can I do for you?"],
+            "how are you": ["I'm doing great, thank you!", "I'm just a bot, but I'm happy to chat with you!"],
+            "bye": ["Goodbye! Have a nice day!", "See you later!", "Bye! Take care!"],
+            "who are you": ["i'm a chatbot created by junaid"],
+            "default": ["I'm sorry, I didn't understand that.", "Could you say that again?", "I'm not sure how to respond to that."]
+        }
+
+    def get_response(self, user_input):
+        # Convert user input to lowercase for matching
+        user_input = user_input.lower()
+        for key in self.responses:
+            if key in user_input:
+                return random.choice(self.responses[key])
+        return random.choice(self.responses["default"])
+
+# Instantiate the chatbot
+chatbot = Chatbot()
+
+# Create text boxes and button
+output = widgets.Output()
+input_box = widgets.Text(placeholder='Type a message...')
+send_button = widgets.Button(description="Send")
+
+def on_button_click(b):
+    user_input = input_box.value
+    if user_input:
+        with output:
+            print(f"You: {user_input}")
+            bot_response = chatbot.get_response(user_input)
+            print(f"Bot: {bot_response}")
+        input_box.value = ''  # Clear the input box
+
+# Link the button click to the function
+send_button.on_click(on_button_click)
+
+# Display the interface
+display(input_box, send_button, output)
